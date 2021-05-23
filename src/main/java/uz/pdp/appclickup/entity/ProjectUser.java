@@ -8,6 +8,7 @@ import uz.pdp.appclickup.entity.enums.WorkSpacePermissionName;
 import uz.pdp.appclickup.entity.template.AbsUUIDEntity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -23,5 +24,9 @@ public class ProjectUser extends AbsUUIDEntity {
     private User userId;
 
     @Enumerated(EnumType.STRING)
-    private WorkSpacePermissionName taskPermission;  // ??? we  may  create taskPermission ENUM
+    private WorkSpacePermissionName taskPermission;
+
+    public ProjectUser(Project project, User user, List<WorkSpacePermission> taskPermission) {
+
+    }
 }

@@ -6,21 +6,20 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import uz.pdp.appclickup.entity.template.AbsUUIDEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name","owner_id_id"})})
 public class WorkSpace extends AbsUUIDEntity {
 
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String color;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -31,4 +30,18 @@ public class WorkSpace extends AbsUUIDEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Attachment avatar;
+
+
+    @PrePersist
+    @PreUpdate
+    void setInitialLetter(){
+        this.initialLetter=name.substring(0,1);
+    }
+
+    public WorkSpace(String name, String color, User ownerId, Attachment avatar) {
+        this.name = name;
+        this.color = color;
+        this.ownerId = ownerId;
+        this.avatar = avatar;
+    }
 }

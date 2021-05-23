@@ -38,4 +38,12 @@ public class Space extends AbsUUIDEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User ownerId;
+
+    public Space(String name, String color, Attachment avatarId, WorkSpace workSpaceId) {
+        this.name = name;
+        this.color = color;
+        this.avatarId = avatarId;
+        this.workSpaceId = workSpaceId;
+
+    }
 }
