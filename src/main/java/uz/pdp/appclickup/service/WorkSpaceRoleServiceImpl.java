@@ -1,5 +1,6 @@
 package uz.pdp.appclickup.service;
 
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import uz.pdp.appclickup.entity.WorkSpace;
 import uz.pdp.appclickup.entity.WorkSpacePermission;
@@ -15,15 +16,16 @@ import uz.pdp.appclickup.repository.WorkSpaceRoleRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
-public class WorkSpaceRoleImpl implements WorkSpaceRoleService {
+public class WorkSpaceRoleServiceImpl implements WorkSpaceRoleService {
 
     final WorkSpaceRoleRepository workSpaceRoleRepository;
     final WorkSpaceRepository workSpaceRepository;
     final WorkSpacePermissionRepository workSpacePermissionRepository;
 
-    public WorkSpaceRoleImpl(WorkSpaceRoleRepository workSpaceRoleRepository, WorkSpaceRepository workSpaceRepository, WorkSpacePermissionRepository workSpacePermissionRepository) {
+    public WorkSpaceRoleServiceImpl(WorkSpaceRoleRepository workSpaceRoleRepository, WorkSpaceRepository workSpaceRepository, WorkSpacePermissionRepository workSpacePermissionRepository) {
         this.workSpaceRoleRepository = workSpaceRoleRepository;
         this.workSpaceRepository = workSpaceRepository;
         this.workSpacePermissionRepository = workSpacePermissionRepository;
@@ -76,6 +78,55 @@ public class WorkSpaceRoleImpl implements WorkSpaceRoleService {
         workSpacePermissionRepository.saveAll(workSpacePermissionList);
 
         return new ApiResponse("WorkSpaceRole added", true);
+
+    }
+
+    @Override
+    public List<WorkSpaceRole> getAll() {
+        return workSpaceRoleRepository.findAll();
+    }
+
+    @Override
+    public WorkSpaceRole getOneById(UUID id) {
+
+        Optional<WorkSpaceRole> optionalWorkSpaceRole = workSpaceRoleRepository.findById(id);
+        return optionalWorkSpaceRole.orElse(null);
+    }
+
+    @Override
+    public ApiResponse deleteById(UUID workSpaceId, UUID workSpaceRoleId) {
+
+        Optional<WorkSpace> optionalWorkSpace = workSpaceRepository.findById(workSpaceId);
+        if (!optionalWorkSpace.isPresent())
+            return new ApiResponse("Such workSpace not found", false);
+
+        WorkSpace workSpace = optionalWorkSpace.get();
+
+        workSpaceRoleRepository.deleteByIdAndWorkSpaceId(workSpaceRoleId, workSpace);
+        return new ApiResponse("WorkSpaceRole deleted with workSpaceId", true);
+    }
+
+    @Override
+    public List<WorkSpaceRole> getAllWorkSpaceRoleByWorkSpaceId(UUID workSpaceId) {
+
+        Optional<WorkSpace> optionalWorkSpace = workSpaceRepository.findById(workSpaceId);
+        if (!optionalWorkSpace.isPresent())
+            return null;
+        WorkSpace workSpace = optionalWorkSpace.get();
+
+        return workSpaceRoleRepository.findAllByWorkSpaceId(workSpace);
+    }
+
+    @Override
+    public WorkSpaceRole getOneWorkSpaceRoleByIdAndWorkSpaceId(UUID workSpaceId, UUID workSpaceRoleId) {
+
+        Optional<WorkSpace> optionalWorkSpace = workSpaceRepository.findById(workSpaceId);
+        if (!optionalWorkSpace.isPresent())
+            return null;
+        WorkSpace workSpace = optionalWorkSpace.get();
+
+        Optional<WorkSpaceRole> optionalWorkSpaceRole = workSpaceRoleRepository.findByIdAndWorkSpaceId(workSpaceRoleId, workSpace);
+        return optionalWorkSpaceRole.orElse(null);
 
     }
 }

@@ -15,7 +15,7 @@ public interface WorkSpaceService {
 
     ApiResponse addWorkSpace(WorkSpaceDto workSpaceDto, User user);
 
-    ApiResponse editWorkSpace(UUID id, WorkSpaceDto workSpaceDto,User user);
+    ApiResponse editWorkSpace(UUID id, WorkSpaceDto workSpaceDto,User user,Integer editingField);
 
     ApiResponse changeOwnerOfWorkSpace(UUID id, UUID ownerId);
 

@@ -87,4 +87,10 @@ public class SpaceServiceImpl implements SpaceService {
         spaceRepository.deleteById(id);
         return new ApiResponse("Space deleted", true);
     }
+
+    @Override
+    public Space getOneSpaceById(UUID id) {
+
+        return spaceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("space with this id not found"));
+    }
 }

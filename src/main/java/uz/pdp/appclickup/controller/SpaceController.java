@@ -1,6 +1,7 @@
 package uz.pdp.appclickup.controller;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.appclickup.entity.Space;
@@ -25,27 +26,35 @@ public class SpaceController {
 
     @PostMapping
     public HttpEntity<?> addSpace(@RequestBody SpaceDto spaceDto, @CurrentUser User user) {
-        ApiResponse apiResponse = spaceService.addSpace(spaceDto,user);
+        ApiResponse apiResponse = spaceService.addSpace(spaceDto, user);
         return ResponseEntity.status(apiResponse.isSuccess() ? 201 : 409).body(apiResponse);
     }
 
     @PutMapping("/{id}")
     public HttpEntity<?> editSpace(@PathVariable UUID id, @RequestBody SpaceDto spaceDto, @CurrentUser User user) {
-        ApiResponse apiResponse = spaceService.editSpace(id,spaceDto,user);
+        ApiResponse apiResponse = spaceService.editSpace(id, spaceDto, user);
         return ResponseEntity.status(apiResponse.isSuccess() ? 201 : 409).body(apiResponse);
     }
 
     @GetMapping
-    public HttpEntity<?>getSpaceList(){
-        List<Space> spaceList=spaceService.getSpaceList();
+    public HttpEntity<?> getSpaceList() {
+        List<Space> spaceList = spaceService.getSpaceList();
         return ResponseEntity.ok(spaceList);
     }
 
     @DeleteMapping("/{id}")
-    public HttpEntity<?> deleteSpace(@PathVariable UUID id){
-        ApiResponse apiResponse=spaceService.deleteSpace(id);
+    public HttpEntity<?> deleteSpace(@PathVariable UUID id) {
+        ApiResponse apiResponse = spaceService.deleteSpace(id);
         return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 409).body(apiResponse);
 
 
+    }
+
+
+    @GetMapping("/{id}")
+    public HttpEntity<?> getOneSpaceById(@PathVariable UUID id) {
+
+        Space space = spaceService.getOneSpaceById(id);
+        return ResponseEntity.status((space==null)?HttpStatus.NO_CONTENT:HttpStatus.OK).body(space);
     }
 }

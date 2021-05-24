@@ -17,4 +17,6 @@ public interface SpaceService {
     List<Space> getSpaceList();
 
     ApiResponse deleteSpace(UUID id);
+
+    Space getOneSpaceById(UUID id);
 }

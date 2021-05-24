@@ -41,9 +41,13 @@ public class WorkSpaceController {
      * @return
      */
     @PutMapping("/{id}")
-    public HttpEntity<?> editWorkSpace(@PathVariable UUID id, @RequestBody WorkSpaceDto workSpaceDto, @CurrentUser User user) {
+    public HttpEntity<?> editWorkSpace(@PathVariable UUID id, @RequestBody WorkSpaceDto workSpaceDto, @CurrentUser User user,Integer editingField) {
 
-        ApiResponse apiResponse = workSpaceService.editWorkSpace(id, workSpaceDto, user);
+        //  editingField=1  workSpace name is changing
+        //  editingField=2  workSpace color is changing
+        //  editingField=3  workSpace avatar is changing
+
+        ApiResponse apiResponse = workSpaceService.editWorkSpace(id, workSpaceDto, user,editingField);
         return ResponseEntity.status(apiResponse.isSuccess() ? 201 : 409).body(apiResponse);
     }
 
