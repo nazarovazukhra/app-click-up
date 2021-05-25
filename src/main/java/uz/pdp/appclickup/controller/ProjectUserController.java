@@ -3,10 +3,12 @@ package uz.pdp.appclickup.controller;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uz.pdp.appclickup.entity.ProjectUser;
 import uz.pdp.appclickup.payload.ApiResponse;
 import uz.pdp.appclickup.payload.ProjectUserDto;
 import uz.pdp.appclickup.service.ProjectUserService;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -27,15 +29,28 @@ public class ProjectUserController {
     }
 
 
-    @PutMapping("/{id}")
-    public HttpEntity<?> editProjectUser(@PathVariable UUID id, @RequestBody ProjectUserDto projectUserDto) {
-        ApiResponse apiResponse = projectUserService.editProjectUser(id, projectUserDto);
-        return ResponseEntity.status(apiResponse.isSuccess() ? 201 : 409).body(apiResponse);
+    @PutMapping
+    public HttpEntity<?> editProjectUser(@RequestBody ProjectUserDto projectUserDto) {
+        ApiResponse apiResponse = projectUserService.editProjectUser(projectUserDto);
+        return ResponseEntity.status(apiResponse.isSuccess() ? 202 : 409).body(apiResponse);
     }
 
     @DeleteMapping("/{id}")
     public HttpEntity<?> deleteProjectUser(@PathVariable UUID id) {
         ApiResponse apiResponse = projectUserService.deleteProjectUser(id);
-        return ResponseEntity.status(apiResponse.isSuccess() ? 201 : 409).body(apiResponse);
+        return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 409).body(apiResponse);
+    }
+
+
+    @GetMapping
+    public HttpEntity<?> getAll(@RequestParam UUID workSpaceId, @RequestParam UUID ownerId) {
+        List<ProjectUser> projectUsers = projectUserService.getAll(workSpaceId, ownerId);
+        return ResponseEntity.ok(projectUsers);
+    }
+
+    @GetMapping
+    public HttpEntity<?> getOne(@RequestParam UUID workSpaceId, @RequestParam UUID projectUserId) {
+        ProjectUser projectUser = projectUserService.getOne(workSpaceId, projectUserId);
+        return ResponseEntity.ok(projectUser);
     }
 }

@@ -11,6 +11,7 @@ import uz.pdp.appclickup.entity.enums.SystemRole;
 import uz.pdp.appclickup.entity.template.AbsUUIDEntity;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -34,23 +35,25 @@ public class User extends AbsUUIDEntity implements UserDetails {
 
     private String emailCode;
 
+    private Timestamp lastActiveTime;
+
     @OneToOne(fetch = FetchType.LAZY)
     private Attachment avatar;
 
     @Enumerated(EnumType.STRING)
     private SystemRole systemRole;
 
-    private boolean accountNonExpired=true;
+    private boolean accountNonExpired = true;
 
-    private boolean accountNonLocked=true;
+    private boolean accountNonLocked = true;
 
-    private boolean credentialsNonExpired=true;
+    private boolean credentialsNonExpired = true;
 
     private boolean enabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority simpleGrantedAuthority=new SimpleGrantedAuthority(this.systemRole.name());
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(this.systemRole.name());
         return Collections.singletonList(simpleGrantedAuthority);
     }
 

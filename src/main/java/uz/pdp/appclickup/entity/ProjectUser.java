@@ -26,7 +26,4 @@ public class ProjectUser extends AbsUUIDEntity {
     @Enumerated(EnumType.STRING)
     private WorkSpacePermissionName taskPermission;
 
-    public ProjectUser(Project project, User user, List<WorkSpacePermission> taskPermission) {
-
-    }
 }

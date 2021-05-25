@@ -7,7 +7,9 @@ import uz.pdp.appclickup.payload.ProjectUserDto;
 import uz.pdp.appclickup.repository.ProjectRepository;
 import uz.pdp.appclickup.repository.ProjectUserRepository;
 import uz.pdp.appclickup.repository.UserRepository;
+import uz.pdp.appclickup.repository.WorkSpacePermissionRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -45,31 +47,33 @@ public class ProjectUserServiceImpl implements ProjectUserService {
         if (exists)
             return new ApiResponse("In this project already has such user", false);
 
-        projectUserRepository.save(new ProjectUser(project, user, projectUserDto.getTaskPermission()));
+        ProjectUser projectUser = new ProjectUser();
+        projectUser.setUserId(userRepository.getOne(projectUserDto.getUserId()));
+        projectUser.setProjectId(projectRepository.getOne(projectUserDto.getProjectId()));
+        projectUser.setTaskPermission(workSpacePermissionRepository.getOne(projectUserDto.getTaskPermission()).getPermission());
+        projectUserRepository.save(projectUser);
         return new ApiResponse("", true);
     }
 
     @Override
-    public ApiResponse editProjectUser(UUID id, ProjectUserDto projectUserDto) {
+    public ApiResponse editProjectUser(ProjectUserDto projectUserDto) {
 
-        Optional<ProjectUser> optionalProjectUser = projectUserRepository.findById(id);
+        Optional<ProjectUser> optionalProjectUser = projectUserRepository.findByProjectIdAndUserId(projectUserDto.getProjectId(), projectUserDto.getUserId());
         if (!optionalProjectUser.isPresent())
-            return new ApiResponse("Not found", false);
+            return new ApiResponse("In this user does not have such project ", false);
+
         ProjectUser editingProjectUser = optionalProjectUser.get();
 
-
-        Optional<User> optionalUser = userRepository.findById(projectUserDto.getUserId());
-        if (!optionalUser.isPresent())
-            return new ApiResponse("Such project not found", false);
-        User user = optionalUser.get();
-
-        boolean exists = projectUserRepository.existsByProjectIdAndUserId
-                (projectRepository.findById(projectUserDto.getProjectId()).orElseThrow(null), user);
+        boolean exists = projectUserRepository.existsByProjectIdAndUserIdAndIdNot(projectUserDto.getProjectId(), projectUserDto.getUserId());
         if (exists)
             return new ApiResponse("In this project already has such user", false);
 
-        editingProjectUser.setUserId(user);
-        return new ApiResponse("", true);
+        editingProjectUser.setUserId(userRepository.getOne(projectUserDto.getUserId()));
+        editingProjectUser.setProjectId(projectRepository.getOne(projectUserDto.getProjectId()));
+        editingProjectUser.setTaskPermission(workSpacePermissionRepository.getOne(projectUserDto.getTaskPermission()).getPermission());
+        projectUserRepository.save(editingProjectUser);
+
+        return new ApiResponse("ProjectUser edited", true);
 
     }
 
@@ -82,5 +86,18 @@ public class ProjectUserServiceImpl implements ProjectUserService {
 
         projectUserRepository.deleteById(id);
         return new ApiResponse("User deleted from this project", true);
+    }
+
+    @Override
+    public List<ProjectUser> getAll(UUID workSpaceId, UUID ownerId) {
+
+        return projectUserRepository.getProjectUsers(workSpaceId, ownerId);
+    }
+
+
+    @Override
+    public ProjectUser getOne(UUID workSpaceId, UUID projectUserId) {
+
+        return projectUserRepository.getOneProjectUser(workSpaceId, projectUserId);
     }
 }

@@ -25,4 +25,8 @@ public interface WorkSpaceUserRepository extends JpaRepository<WorkSpaceUser, Lo
 
     @Query("select wk  from  WorkSpaceUser wk  where  wk.workSpaceId.id=:id and wk.workSpaceRole.id='8a8c8dab-62cd-44d7-8b86-b4b2b47ead1a'")
     List<WorkSpaceUser> getAllGuestsList(UUID id);
+
+    List<WorkSpaceUser> findAllByWorkSpaceId(WorkSpace workSpaceId);
+
+    List<WorkSpaceUser> findAllByUserId(User userId);
 }
