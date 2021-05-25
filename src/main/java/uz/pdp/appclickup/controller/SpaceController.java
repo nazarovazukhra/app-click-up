@@ -36,10 +36,17 @@ public class SpaceController {
         return ResponseEntity.status(apiResponse.isSuccess() ? 201 : 409).body(apiResponse);
     }
 
-    @GetMapping
-    public HttpEntity<?> getSpaceList() {
-        List<Space> spaceList = spaceService.getSpaceList();
+    @GetMapping("/{worSpaceId}")
+    public HttpEntity<?> getSpaceList(@PathVariable UUID worSpaceId) {
+        List<Space> spaceList = spaceService.getSpaceList(worSpaceId);
         return ResponseEntity.ok(spaceList);
+    }
+
+    @GetMapping("/oneSpaceByWorkSpaceId")
+    public HttpEntity<?> getOneSpaceByWorkSpaceId(@RequestParam UUID workSpaceId,@RequestParam UUID spaceId) {
+
+        Space space = spaceService.getOneSpaceByWorkSpaceId(workSpaceId,spaceId);
+        return ResponseEntity.status((space==null)?HttpStatus.NO_CONTENT:HttpStatus.OK).body(space);
     }
 
     @DeleteMapping("/{id}")
@@ -47,14 +54,6 @@ public class SpaceController {
         ApiResponse apiResponse = spaceService.deleteSpace(id);
         return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 409).body(apiResponse);
 
-
     }
 
-
-    @GetMapping("/{id}")
-    public HttpEntity<?> getOneSpaceById(@PathVariable UUID id) {
-
-        Space space = spaceService.getOneSpaceById(id);
-        return ResponseEntity.status((space==null)?HttpStatus.NO_CONTENT:HttpStatus.OK).body(space);
-    }
 }

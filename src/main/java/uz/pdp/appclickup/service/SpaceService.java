@@ -14,9 +14,9 @@ public interface SpaceService {
 
     ApiResponse editSpace(UUID id,SpaceDto spaceDto, User user);
 
-    List<Space> getSpaceList();
+    List<Space> getSpaceList(UUID worSpaceId);
 
     ApiResponse deleteSpace(UUID id);
 
-    Space getOneSpaceById(UUID id);
+    Space getOneSpaceByWorkSpaceId(UUID workSpaceId, UUID spaceId);
 }

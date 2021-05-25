@@ -72,9 +72,9 @@ public class SpaceServiceImpl implements SpaceService {
     }
 
     @Override
-    public List<Space> getSpaceList() {
+    public List<Space> getSpaceList(UUID worSpaceId) {
 
-        return spaceRepository.findAll();
+        return spaceRepository.findAllByWorkSpaceId(worSpaceId);
     }
 
     @Override
@@ -89,8 +89,7 @@ public class SpaceServiceImpl implements SpaceService {
     }
 
     @Override
-    public Space getOneSpaceById(UUID id) {
-
-        return spaceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("space with this id not found"));
+    public Space getOneSpaceByWorkSpaceId(UUID workSpaceId, UUID spaceId) {
+        return spaceRepository.findByIdAndWorkSpaceId(spaceId,workSpaceId);
     }
 }
