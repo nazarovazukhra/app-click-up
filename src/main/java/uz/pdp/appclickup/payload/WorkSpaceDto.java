@@ -20,7 +20,6 @@ public class WorkSpaceDto {
 
     private UUID avatarId;
 
-    private String initialLetter;
 
 
 }

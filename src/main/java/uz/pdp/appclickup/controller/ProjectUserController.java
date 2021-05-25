@@ -43,14 +43,14 @@ public class ProjectUserController {
 
 
     @GetMapping
-    public HttpEntity<?> getAll(@RequestParam UUID workSpaceId, @RequestParam UUID ownerId) {
-        List<ProjectUser> projectUsers = projectUserService.getAll(workSpaceId, ownerId);
+    public HttpEntity<?> getAll(@RequestParam UUID spaceId) {
+        List<ProjectUser> projectUsers = projectUserService.getAll(spaceId);
         return ResponseEntity.ok(projectUsers);
     }
 
     @GetMapping
-    public HttpEntity<?> getOne(@RequestParam UUID workSpaceId, @RequestParam UUID projectUserId) {
-        ProjectUser projectUser = projectUserService.getOne(workSpaceId, projectUserId);
+    public HttpEntity<?> getOne(@RequestParam UUID projectId, @RequestParam UUID userId) {
+        ProjectUser projectUser = projectUserService.getOne(projectId, userId);
         return ResponseEntity.ok(projectUser);
     }
 }

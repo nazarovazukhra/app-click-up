@@ -13,5 +13,9 @@ public interface SpaceRepository extends JpaRepository<Space, UUID> {
 
     List<Space> findAllByWorkSpaceId(UUID workSpaceId);
 
-    Space findByIdAndWorkSpaceId(UUID id, UUID workSpaceId);
+    Space findByIdAndWorkSpaceId(UUID spaceId, UUID workSpaceId);
+
+    void deleteByIdAndWorkSpaceId(UUID spaceId, UUID workSpaceId);
+
+    boolean existsByIdAndWorkSpaceId(UUID id, UUID workSpaceId);
 }

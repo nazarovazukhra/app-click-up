@@ -16,7 +16,7 @@ public interface ProjectUserService {
 
     ApiResponse deleteProjectUser(UUID id);
 
-    List<ProjectUser> getAll(UUID workSpaceId, UUID ownerId);
+    List<ProjectUser> getAll(UUID spaceId);
 
-    ProjectUser getOne(UUID workSpaceId, UUID projectUserId);
+    ProjectUser getOne(UUID projectId, UUID userId);
 }

@@ -64,12 +64,12 @@ public class ProjectUserServiceImpl implements ProjectUserService {
 
         ProjectUser editingProjectUser = optionalProjectUser.get();
 
-        boolean exists = projectUserRepository.existsByProjectIdAndUserIdAndIdNot(projectUserDto.getProjectId(), projectUserDto.getUserId());
-        if (exists)
-            return new ApiResponse("In this project already has such user", false);
+//        userId va projectId ni o'zgartirmaymiz shunga endi bu kerak emas
+//        boolean exists = projectUserRepository.existsByProjectIdAndUserIdAndIdNot(projectUserDto.getProjectId(), projectUserDto.getUserId(),editingProjectUser.getId());
+//        if (exists)
+//            return new ApiResponse("In this project already has such user", false);
+//
 
-        editingProjectUser.setUserId(userRepository.getOne(projectUserDto.getUserId()));
-        editingProjectUser.setProjectId(projectRepository.getOne(projectUserDto.getProjectId()));
         editingProjectUser.setTaskPermission(workSpacePermissionRepository.getOne(projectUserDto.getTaskPermission()).getPermission());
         projectUserRepository.save(editingProjectUser);
 
@@ -89,15 +89,15 @@ public class ProjectUserServiceImpl implements ProjectUserService {
     }
 
     @Override
-    public List<ProjectUser> getAll(UUID workSpaceId, UUID ownerId) {
-
-        return projectUserRepository.getProjectUsers(workSpaceId, ownerId);
+    public List<ProjectUser> getAll(UUID spaceId) {
+        return projectUserRepository.getAllProjectUsersBySpaceId(spaceId);
     }
 
 
     @Override
-    public ProjectUser getOne(UUID workSpaceId, UUID projectUserId) {
+    public ProjectUser getOne(UUID projectId, UUID userId) {
 
-        return projectUserRepository.getOneProjectUser(workSpaceId, projectUserId);
+        Optional<ProjectUser> optionalProjectUser = projectUserRepository.findByProjectIdAndUserId(projectId, userId);
+        return optionalProjectUser.orElse(null);
     }
 }

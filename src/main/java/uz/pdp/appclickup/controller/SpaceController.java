@@ -43,15 +43,15 @@ public class SpaceController {
     }
 
     @GetMapping("/oneSpaceByWorkSpaceId")
-    public HttpEntity<?> getOneSpaceByWorkSpaceId(@RequestParam UUID workSpaceId,@RequestParam UUID spaceId) {
+    public HttpEntity<?> getOneSpaceByWorkSpaceId(@RequestParam UUID workSpaceId, @RequestParam UUID spaceId) {
 
-        Space space = spaceService.getOneSpaceByWorkSpaceId(workSpaceId,spaceId);
-        return ResponseEntity.status((space==null)?HttpStatus.NO_CONTENT:HttpStatus.OK).body(space);
+        Space space = spaceService.getOneSpaceByWorkSpaceId(workSpaceId, spaceId);
+        return ResponseEntity.status((space == null) ? HttpStatus.NO_CONTENT : HttpStatus.OK).body(space);
     }
 
-    @DeleteMapping("/{id}")
-    public HttpEntity<?> deleteSpace(@PathVariable UUID id) {
-        ApiResponse apiResponse = spaceService.deleteSpace(id);
+    @DeleteMapping
+    public HttpEntity<?> deleteSpace(@RequestParam UUID spaceId, @RequestParam UUID workSpaceId) {
+        ApiResponse apiResponse = spaceService.deleteSpace(spaceId, workSpaceId);
         return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 409).body(apiResponse);
 
     }

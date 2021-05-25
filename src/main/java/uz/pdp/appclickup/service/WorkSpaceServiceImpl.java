@@ -113,19 +113,20 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
     }
 
     @Override
-    public ApiResponse editWorkSpace(UUID id, WorkSpaceDto workSpaceDto, User user, Integer editingField) {
+    public ApiResponse editWorkSpace(UUID id, WorkSpaceDto workSpaceDto, User user) {
         Optional<WorkSpace> optionalWorkSpace = workSpaceRepository.findById(id);
         if (!optionalWorkSpace.isPresent())
             return new ApiResponse("Such workspace not found", false);
 
         WorkSpace editingWorkSpace = optionalWorkSpace.get();
 
-        if (editingField == 1) {
-
-            if (workSpaceRepository.existsByOwnerIdAndName(user, workSpaceDto.getName()))
-                return new ApiResponse("In this user has such workspace with this  " + workSpaceDto.getName() + "  name", false);
-
+        if (workSpaceRepository.existsByOwnerIdAndName(user, workSpaceDto.getName())) {
+            editingWorkSpace.setColor(workSpaceDto.getColor());
+            editingWorkSpace.setAvatar(workSpaceDto.getAvatarId() == null ? null : attachmentRepository.findById(workSpaceDto.getAvatarId()).orElseThrow(() -> new ResourceNotFoundException("Attachment not found")));
+            workSpaceRepository.save(editingWorkSpace);
+            return new ApiResponse("You can not change only workSpace name because  " + workSpaceDto.getName() + " already exists in this workSpace", true);
         }
+
         editingWorkSpace.setName(workSpaceDto.getName());
         editingWorkSpace.setColor(workSpaceDto.getColor());
         editingWorkSpace.setAvatar(workSpaceDto.getAvatarId() == null ? null : attachmentRepository.findById(workSpaceDto.getAvatarId()).orElseThrow(() -> new ResourceNotFoundException("Attachment not found")));
@@ -155,9 +156,14 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
     }
 
     @Override
-    public ApiResponse deleteWorkSpace(UUID id) {
+    public ApiResponse deleteWorkSpace(UUID workSpaceId, UUID ownerId) {
         try {
-            workSpaceRepository.deleteById(id);
+
+            boolean exists = workSpaceRepository.existsByIdAndOwnerId(workSpaceId, ownerId);
+            if (!exists)
+                return new ApiResponse("Such workSpace not found in this user", false);
+
+            workSpaceRepository.deleteByIdAndOwnerId(workSpaceId, ownerId);
             return new ApiResponse("WorkSpace deleted", true);
         } catch (Exception exception) {
             return new ApiResponse("Error ", false);
@@ -240,5 +246,10 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
         return workSpaceRepository.findAll();
     }
 
+    @Override
+    public List<WorkSpace> getAllWorkSpaceByOwnerId(UUID ownerId) {
+
+        return workSpaceRepository.findAllByOwnerId(ownerId);
+    }
 }
 

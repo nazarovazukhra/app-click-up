@@ -48,7 +48,6 @@ public class SpaceServiceImpl implements SpaceService {
         return new ApiResponse("Space added", true);
     }
 
-
     @Override
     public ApiResponse editSpace(UUID id, SpaceDto spaceDto, User user) {
 
@@ -60,12 +59,17 @@ public class SpaceServiceImpl implements SpaceService {
 
         boolean exists = spaceRepository.existsByNameAndWorkSpaceId(spaceDto.getName(), workSpaceRepository.findById(spaceDto.getWorkSpaceId()).orElseThrow(() -> new ResourceNotFoundException("WorkSpace not found ")));
 
-        if (exists)
-            return new ApiResponse("In this user has such space", false);
+        if (exists) {
+
+            editingSpace.setColor(spaceDto.getColor());
+            editingSpace.setAvatarId(attachmentRepository.getOne(spaceDto.getAvatarId()));
+            spaceRepository.save(editingSpace);
+            return new ApiResponse("In this workSpace has such space with this "+ spaceDto.getName()+ "  you can only change color and avatar", true);
+        }
 
         editingSpace.setColor(spaceDto.getColor());
         editingSpace.setName(spaceDto.getName());
-
+        editingSpace.setAvatarId(attachmentRepository.getOne(spaceDto.getAvatarId()));
         spaceRepository.save(editingSpace);
         return new ApiResponse("Space edited", true);
 
@@ -78,18 +82,20 @@ public class SpaceServiceImpl implements SpaceService {
     }
 
     @Override
-    public ApiResponse deleteSpace(UUID id) {
-
-        boolean existsById = spaceRepository.existsById(id);
-        if (!existsById)
-            return new ApiResponse("Such space not found", false);
-
-        spaceRepository.deleteById(id);
-        return new ApiResponse("Space deleted", true);
+    public Space getOneSpaceByWorkSpaceId(UUID workSpaceId, UUID spaceId) {
+        return spaceRepository.findByIdAndWorkSpaceId(spaceId, workSpaceId);
     }
 
     @Override
-    public Space getOneSpaceByWorkSpaceId(UUID workSpaceId, UUID spaceId) {
-        return spaceRepository.findByIdAndWorkSpaceId(spaceId,workSpaceId);
+    public ApiResponse deleteSpace(UUID spaceId,UUID workSpaceId) {
+
+        boolean existsById = spaceRepository.existsByIdAndWorkSpaceId(spaceId,workSpaceId);
+        if (!existsById)
+            return new ApiResponse("Such space not found in this workSpace", false);
+
+        spaceRepository.deleteByIdAndWorkSpaceId(spaceId,workSpaceId);
+        return new ApiResponse("Space deleted which was in this workSpace", true);
     }
+
+
 }

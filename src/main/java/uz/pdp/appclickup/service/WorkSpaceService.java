@@ -15,11 +15,11 @@ public interface WorkSpaceService {
 
     ApiResponse addWorkSpace(WorkSpaceDto workSpaceDto, User user);
 
-    ApiResponse editWorkSpace(UUID id, WorkSpaceDto workSpaceDto,User user,Integer editingField);
+    ApiResponse editWorkSpace(UUID id, WorkSpaceDto workSpaceDto,User user);
 
     ApiResponse changeOwnerOfWorkSpace(UUID id, UUID ownerId);
 
-    ApiResponse deleteWorkSpace(UUID id);
+    ApiResponse deleteWorkSpace(UUID workSpaceId,UUID ownerId);
 
     ApiResponse addOrEditOrDelete(UUID id, MemberDto memberDto);
 
@@ -27,5 +27,6 @@ public interface WorkSpaceService {
 
     List<WorkSpace> getAllWorkSpace();
 
+    List<WorkSpace> getAllWorkSpaceByOwnerId(UUID ownerId);
 
 }

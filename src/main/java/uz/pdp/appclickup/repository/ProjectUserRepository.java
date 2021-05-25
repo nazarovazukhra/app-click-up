@@ -16,12 +16,8 @@ public interface ProjectUserRepository extends JpaRepository<ProjectUser, UUID> 
 
     Optional<ProjectUser> findByProjectIdAndUserId(UUID projectId, UUID userId);
 
-    boolean existsByProjectIdAndUserIdAndIdNot(UUID projectId, UUID userId);
+//    boolean existsByProjectIdAndUserIdAndIdNot(UUID projectId, UUID userId, UUID id);
 
-    @Query(value = "select ProjectUser from  ProjectUser join WorkSpace where WorkSpace.id=:workSpaceId and WorkSpace.ownerId.id=:ownerId ")
-    List<ProjectUser> getProjectUsers(UUID workSpaceId, UUID ownerId);
-
-
-    @Query(value = "select ProjectUser from ProjectUser join WorkSpace where ProjectUser.id=:projectUserId and WorkSpace.id=:workSpaceId")
-    ProjectUser getOneProjectUser(UUID workSpaceId, UUID projectUserId);
+    @Query(value = "select ProjectUser from ProjectUser join Space where Space.id=:spaceId")
+    List<ProjectUser> getAllProjectUsersBySpaceId(UUID spaceId);
 }

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uz.pdp.appclickup.entity.User;
-import uz.pdp.appclickup.entity.WorkSpace;
 import uz.pdp.appclickup.entity.WorkSpaceUser;
 import uz.pdp.appclickup.payload.MemberDto;
 import uz.pdp.appclickup.payload.WorkSpaceDto;
@@ -45,12 +44,15 @@ public class WorkSpaceUserController {
     @GetMapping("/member/{id}")
     public HttpEntity<?> getMemberAndGuest(@PathVariable UUID id) {
         List<MemberDto> workSpaceUserList = workSpaceUserService.getMemberAndGuest(id);
+        return ResponseEntity.ok(workSpaceUserList);
     }
 
 
     @GetMapping
-    public HttpEntity<?>getMyWorkSpaces(@CurrentUser User user){
-        List<WorkSpaceDto>workSpaces=workSpaceUserService.getMyWorkSpaces(user);
+    public HttpEntity<?> getMyWorkSpaces(@CurrentUser User user) {
 
+        List<WorkSpaceDto> workSpaces = workSpaceUserService.getMyWorkSpaces(user);
+
+        return ResponseEntity.ok(workSpaces);
     }
 }
